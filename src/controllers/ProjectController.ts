@@ -14,11 +14,56 @@ export class ProjectController {
   };
   static getAllProjects = async (req: Request, res: Response) => {
     try {
-      const proyects = await Project.find({});
-      res.json(proyects);
+      const projects = await Project.find({});
+      res.json(projects);
     } catch (error) {
       console.log(error);
     }
     res.send("Todos los proyectos");
+  };
+  static getProjectById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const project = await Project.findById(id);
+      if (!project) {
+        const error = new Error("Proyecto no encontrado");
+        return res.status(404).json({ error: error.message });
+      }
+      res.json(project);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  static updateProyect = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const project = await Project.findByIdAndUpdate(id, req.body);
+
+      if (!project) {
+        const error = new Error("Proyecto no encontrado");
+        return res.status(404).json({ error: error.message });
+      }
+      await project.save();
+      res.send("Proyecto actualizado");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  static deleteProyect = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const project = await Project.findById(id);
+
+      if (!project) {
+        const error = new Error("Proyecto no encontrado");
+        return res.status(404).json({ error: error.message });
+      }
+      await project.deleteOne();
+      res.send("Proyecto eliminado");
+    } catch (error) {
+      console.log(error);
+    }
   };
 }
