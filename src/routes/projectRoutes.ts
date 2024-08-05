@@ -4,6 +4,7 @@ import { ProjectController } from "../controllers/ProjectController";
 import { handleInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
 import { validateProjectExists } from "../middleware/project";
+import { validateTaskExists } from "../middleware/task";
 
 const router = Router();
 
@@ -60,6 +61,8 @@ router.post(
 
 router.get("/:projectId/tasks", TaskController.getProjectTasks);
 
+router.param("taskId", validateTaskExists);
+
 router.get(
   "/:projectId/tasks/:taskId",
   param("taskId").isMongoId().withMessage("ID no valido"),
@@ -83,6 +86,14 @@ router.delete(
   param("taskId").isMongoId().withMessage("ID no valido"),
   handleInputErrors,
   TaskController.deleteTask
+);
+
+router.post(
+  "/:projectId/tasks/:taskId/status",
+  param("taskId").isMongoId().withMessage("ID no valido"),
+  body("status").notEmpty().withMessage("El estado es obligatorio"),
+  handleInputErrors,
+  TaskController.updateStatus
 );
 
 export default router;
