@@ -10,7 +10,6 @@ export class ProjectController {
     } catch (error) {
       console.log(error);
     }
-    res.send("Creando los proyectos");
   };
   static getAllProjects = async (req: Request, res: Response) => {
     try {
@@ -19,7 +18,6 @@ export class ProjectController {
     } catch (error) {
       console.log(error);
     }
-    res.send("Todos los proyectos");
   };
   static getProjectById = async (req: Request, res: Response) => {
     const { id } = req.params;
