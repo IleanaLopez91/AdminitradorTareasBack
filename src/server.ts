@@ -11,7 +11,7 @@ dotenv.config();
 connectDB();
 
 const server = express();
-//server.use(cors(corsConfig));
+server.use(cors(corsConfig));
 server.use(morgan("dev"));
 server.use(express.json());
 
