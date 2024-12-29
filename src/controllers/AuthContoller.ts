@@ -27,7 +27,7 @@ export class AuthController {
       const token = new Token();
       token.token = generateToken();
       token.user = user.id;
-      console.log(token, user);
+      //console.log(token, user);
 
       //Enviar email
       AuthEmail.sendConfirmationEmail({
@@ -117,7 +117,7 @@ export class AuthController {
       const token = new Token();
       token.token = generateToken();
       token.user = user.id;
-      console.log(token, user);
+      //console.log(token, user);
 
       //Enviar email
       AuthEmail.sendConfirmationEmail({
@@ -149,7 +149,7 @@ export class AuthController {
       const token = new Token();
       token.token = generateToken();
       token.user = user.id;
-      console.log(token, user);
+      //console.log(token, user);
       await token.save();
 
       //Enviar email
@@ -181,13 +181,19 @@ export class AuthController {
 
   static updatePasswordWithToken = async (req: Request, res: Response) => {
     try {
-      const { token } = req.body;
+      const { token } = req.params;
+      const { password } = req.body;
       const tokenExists = await Token.findOne({ token });
       if (!tokenExists) {
         const error = new Error("Token no valido");
         return res.status(404).json({ error: error.message });
       }
-      res.send("Token valido, define tu nuevo password");
+
+      const user = await User.findById(tokenExists.user);
+      user.password = await hashPassword(password);
+
+      await Promise.allSettled([user.save(), tokenExists.deleteOne()]);
+      res.send("El password se modifico correctamente");
     } catch (error) {
       res.status(500).json({ error: "Hubo un error" });
     }
