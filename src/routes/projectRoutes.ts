@@ -8,10 +8,11 @@ import { taskBelongsToProject, validateTaskExists } from "../middleware/task";
 import { authenticate } from "../middleware/auth";
 
 const router = Router();
+router.use(authenticate);
 
 router.post(
   "/",
-  authenticate,
+
   body("projectName")
     .notEmpty()
     .withMessage("El nombre del Proyecto es Obligatorio"),
